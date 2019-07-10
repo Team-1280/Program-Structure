@@ -3,6 +3,7 @@ package frc.robot.Autonomous.Actions;
 
 public abstract class ThreadedBoi implements Runnable{
 
+    public long period;
     public boolean isUpdated = true;
     public boolean isPaused = false;
     public double updateTime = 0;
@@ -43,6 +44,10 @@ public abstract class ThreadedBoi implements Runnable{
     }
     
     public abstract void update();
+    
+    public long getPeriod(){
+        return period;
+    }
     
 
 }
