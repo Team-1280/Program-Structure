@@ -1,10 +1,11 @@
 package frc.lib;
 
-import edu.wpi.first.wpilibj.TimedRobot;
+import java.time.Duration;
+import edu.wpi.first.wpilibj.Timer;
 
 public abstract class Threaded implements Runnable{
 
-    public long period;
+    public long period = Duration.ofMillis(5).toNanos();
     public boolean isUpdated = true;
     public boolean isPaused = false;
     public double updateTime = 0;
@@ -19,10 +20,10 @@ public abstract class Threaded implements Runnable{
             synchronized(this){
                 isUpdated = false;
             }
-            double start = Timer.getFPGATimeStamp();
+            double start = Timer.getFPGATimestamp();
             update();
               synchronized(this){
-                  updateTime = Timer.getFPGATimeStamp() - start;
+                  updateTime = Timer.getFPGATimestamp() - start;
             }
         }
     }
