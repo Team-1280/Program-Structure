@@ -11,8 +11,13 @@ http://www8.cs.umu.se/kurser/TDBD17/VT06/utdelat/Assignment%20Papers/Path%20Trac
 4. Compute desired curvature of the vehicle γ = 2Δx/D2
 5. Move vehicle towards goal point with the desired curvature
 6. Obtain new position and go to point 2 
+
+link for the circular queue / buffer thingy for efficent searching & interpolation
+https://www.geeksforgeeks.org/circular-queue-set-1-introduction-array-implementation/
 */
 package frc.lib.math;
+
+import frc.subsystems.Drive.AutoDriveSignal;
 
 public class PurePursuit{
 
@@ -20,7 +25,20 @@ public class PurePursuit{
 
     }
 
-    public void Drive(){
-
+    public AutoDriveSignal calculate(Point currentPos){
+        double x = currentPos.getX();
+        double y = currentPos.getY();
+        double theta = currentPos.getAngle();
+        double lookAheadDistance = 0 ;// calculate distance 
+        Point goalPoint = new Point(1,1);// get goal point 
+        
+        // converting coordinates of goal to robot coordinates (robot coordinates are @ origin)
+        double goalX = (goalPoint.getX()-x )*Math.cos(theta) + (goalPoint.getY() - y) *Math.sin(theta);
+        double goalY = - (goalPoint.getX() - x) *Math.sin(theta) + (goalPoint.getY() - y) * Math.cos(theta);
+        double radius = Math.pow(lookAheadDistance, 2)/(goalX*2);
+        
+        // calculate wheel velocities using Rate limiter & calculuated curvature (inverse of radius)
+    
+        return new AutoDriveSignal ();
     }
 }
