@@ -25,15 +25,22 @@ public class PurePursuit{
 
     }
 
+    /*
+    ● Find the closest point
+    ● Find the lookahead point
+    ● Calculate the curvature of the arc to the lookahead point
+    ● Calculate the target left and right wheel velocities
+    ● Use a control loop to achieve the target left and right wheel velocities
+    */
     public AutoDriveSignal calculate(Point currentPos){
         double x = currentPos.getX();
         double y = currentPos.getY();
         double theta = currentPos.getAngle();
-        double lookAheadDistance = 0 ;// calculate distance 
-        Point goalPoint = new Point(1,1);// get goal point 
+        Point lookAheadDistance = new Point(0,0); //calculate distance 
+        Point goalPoint = new Point(1,1); // get goal point 
         
         // converting coordinates of goal to robot coordinates (robot coordinates are @ origin)
-        double goalX = (goalPoint.getX()-x )*Math.cos(theta) + (goalPoint.getY() - y) *Math.sin(theta);
+        double goalX = (goalPoint.getX()-x) * Math.cos(theta) + (goalPoint.getY() - y) * Math.sin(theta);
         double goalY = - (goalPoint.getX() - x) *Math.sin(theta) + (goalPoint.getY() - y) * Math.cos(theta);
         double radius = Math.pow(lookAheadDistance, 2)/(goalX*2);
         

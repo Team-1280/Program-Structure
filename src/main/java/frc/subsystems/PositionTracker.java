@@ -28,7 +28,7 @@ public class PositionTracker extends Threaded{
     }
     
     public Point getOdometery(){
-        return position;
+        return position.duplicate();
     }
 
     @Override 

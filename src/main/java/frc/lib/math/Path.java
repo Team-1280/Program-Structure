@@ -12,11 +12,19 @@ Entire path smoothed for smoother turns
 Motion controller follows generated trajectory 
 */
 
+/*
+To do: 
+- Change velocity calculationsto Active pursuit
+- Make 
+*/
 public class Path{
 
     private ArrayList<Point> segments = null;
     private double exitAngle;
-    PositionTracker position = PositionTracker.getInstance();
+    private PositionTracker position = PositionTracker.getInstance();
+    private  double[] distances;
+    private  double[] curvatures;
+    private  double[] velocities;
 
     public Path(){
         segments.add(position.getOdometery());
@@ -100,34 +108,97 @@ public class Path{
     /**
      * Function smooths points
      * 
-     * @param weight_data 
-     * @param weight_smooth
+     * @param a weight_data 
+     * @param b weight_smooth
      * @param tolerance 
      */
-    private void SmoothPath(double weight_data, double weight_smooth, double tolerance){
+    private void SmoothPath(double a, double b, double tolerance){
         ArrayList<Point> smoothSegments = makeCopy(segments);
 
         if(segments.size() > 1){
-            double change = tolerance;
-            while(change >= tolerance){
-                change = 0.0;
-                for(int i = 0; i < segments.size(); i++){
-                    
-                    /*
-                    double aux = newPath[i][j];
-					newPath[i][j] += weight_data * (path[i][j] - newPath[i][j]) + weight_smooth * (newPath[i-1][j] + newPath[i+1][j] - (2.0 * newPath[i][j]));
-					change += Math.abs(aux - newPath[i][j]);	
-                    */
+            int numPoints = smoothSegments.size();
+            double deltaPath = 0.0;
+            while(deltaPath>= tolerance)
+                {
+                    for(int i = 1; i <  numPoints - 1; i++){
+                    // getting values for calculuations
+                    double oldX = segments.get(i).getX();
+                    double x = smoothSegments.get(i).getX();
+                    double aheadX  = smoothSegments.get(i+1).getX();
+                    double behindX = smoothSegments.get(i-1).getX();
+                    double oldY = segments.get(i).getY();
+                    double y = smoothSegments.get(i).getY();
+                    double aheadY = smoothSegments.get(i+1).getY();
+                    double behindY = smoothSegments.get(i-1).getX();
+                    // calculating amount to translate 
+                    double deltaX = a * (oldX - x) + b * (aheadX + behindX - 2.0 * x);
+                    double deltaY = a * (oldY - y) + b * (aheadY + behindY - 2.0 * y);
+                    (smoothSegments.get(i)).translateBy(deltaX, deltaY);
+                    deltaPath += Math.abs(oldX - smoothSegments.get(i).getX());
                 }
             }
-
+            segments = smoothSegments; 
         }
         else{
             System.out.println("Error - path too short to Inject");
             // log this
         }
+    }
 
-       
+      /**
+     * Adds distances between each point to an array - used for calculations later 
+     */
+    public void createDistances(){
+        distances = new double[segments.size() - 1];
+        double accum = 0;
+        for(int i = 1; i <segments.size(); i++){
+            distances[i-1] = accum + Point.distanceBetween(segments.get(i), segments.get(i-1));
+            accum += distances[i-1];
+        }
+    }
+
+
+    // more acurrate method: active pursuit 
+
+    /**
+     * Adds curvatures of each point to an array - used for calculations later 
+     * The curvatures are calculated by taking 3 points at a time and fitting a circle through them.
+     *  Then calculating the curvature of said circle 
+     * 
+     */
+
+    public void createCurvatures(){ 
+        curvatures= new double[segments.size() - 1];
+        for(int i = 1; i <segments.size(); i++){
+            // taking 3 points
+            double x1 = segments.get(i-1).getX();
+            double x2 = segments.get(i).getX();
+            double x3 = segments.get(i+1).getX();
+            double y1 = segments.get(i-1).getY();
+            double y2 = segments.get(i).getY();
+            double y3 = segments.get(i+1).getY();
+
+            if(x1 - x2 < 0.001) {
+                 // ensure no divide by 0 error
+                x2 += 0.001; 
+            }
+            double k1 = 0.5 * (Math.pow(x1, 2) + Math.pow(y1, 2)- Math.pow(x2, 2) - Math.pow(y2, 2))/ (x1-x2);
+            double k2 = (y1 - y2 )/(x1- x2 );
+            double b = 0.5 * (Math.pow(x2,2) - 2 * x2 * k1 + Math.pow(y2, 2) - Math.pow(x3 , 2) + 2 * x3 * k1 - Math.pow(y3,2)) / (x3* k2  - y3 + y2 - x2*k2 );
+            double a = k1 - k2 * b; 
+            double radius = Math.sqrt(Math.pow((x1 - a), 2) + Math.pow ( (y1 - b), 2));
+            curvatures[i-1]  = 1/radius; // curvature = 1/r
+        }
+    }
+
+      /**
+     * Adds max velocities @ each point to an array - used for pure pursuit algo for smoother turning
+     */
+    public void createVelocities(){
+        velocities = new double[segments.size()-1];
+        for(int x = 0; x < segments.size(); x++){
+
+        }
     }
 
     /**
@@ -147,6 +218,5 @@ public class Path{
     }
 
     
-
     
 }

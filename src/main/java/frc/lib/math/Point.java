@@ -8,6 +8,13 @@ public class Point{
     public Point(double x, double y){
       this.x = x;
       this.y = y;
+      theta = 0;
+    }
+
+    public Point(double x, double y, double theta){
+        this.x = x;
+        this.y = y;
+        this.theta = theta;
     }
 
     public double getX(){
@@ -76,6 +83,14 @@ public class Point{
         }
         
         return percent;
+    }
+
+    /**
+     * Function creates a copy of the point object
+     * @return copy of Point object
+     */
+    public Point duplicate(){
+        return new Point(x,y, theta);
     }
 
 }

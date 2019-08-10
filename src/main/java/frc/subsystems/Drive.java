@@ -6,6 +6,11 @@ import frc.robot.Constants;
 
 public class Drive extends Threaded{
 
+    /*
+     2/3 Talons, 2/3 Victor SPXs 
+      
+     */
+
     public enum DriveState{
         TELEOP, PUREPURSUIT
     }
@@ -41,7 +46,7 @@ public class Drive extends Threaded{
         public AutoDriveSignal(DriveSignal signal, boolean isDone){
             this.signal = signal;
             this.isDone = isDone;
-        } 
+        }
 
         public void done(){
             isDone = true;
