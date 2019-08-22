@@ -36,13 +36,14 @@ public class PurePursuit{
         double x = currentPos.getX();
         double y = currentPos.getY();
         double theta = currentPos.getAngle();
-        Point lookAheadDistance = new Point(0,0); //calculate distance 
+        Point lookAheadPoint = new Point(0,0);
+        double lookAheadDistance = 0; //calculate distance 
         Point goalPoint = new Point(1,1); // get goal point 
         
         // converting coordinates of goal to robot coordinates (robot coordinates are @ origin)
         double goalX = (goalPoint.getX()-x) * Math.cos(theta) + (goalPoint.getY() - y) * Math.sin(theta);
         double goalY = - (goalPoint.getX() - x) *Math.sin(theta) + (goalPoint.getY() - y) * Math.cos(theta);
-        double radius = Math.pow(lookAheadDistance, 2)/(goalX*2);
+        double radius = lookAheadDistance * lookAheadDistance /(goalX*2);
         
         // calculate wheel velocities using Rate limiter & calculuated curvature (inverse of radius)
     

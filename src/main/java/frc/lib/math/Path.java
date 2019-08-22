@@ -191,6 +191,10 @@ public class Path{
         }
     }
 
+    public double getCurvature(){
+        return 0;
+    }
+
       /**
      * Adds max velocities @ each point to an array - used for pure pursuit algo for smoother turning
      */
