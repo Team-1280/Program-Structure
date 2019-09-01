@@ -15,7 +15,6 @@ Motion controller follows generated trajectory
 /*
 To do: 
 - Change velocity calculationsto Active pursuit
-- Make 
 */
 public class Path{
 
@@ -23,11 +22,11 @@ public class Path{
     private double exitAngle;
     private PositionTracker position = PositionTracker.getInstance();
     private  double[] distances;
-    private  double[] curvatures;
-    private  double[] velocities;
+    //private  double[] curvatures;
+   // private  double[] velocities;
 
-    public Path(){
-        segments.add(position.getOdometery());
+    public Path(Point here){
+        segments.add(here);
     }
 
     //(1 unit = 1 m)
@@ -74,7 +73,7 @@ public class Path{
     /**
      * Function Injects points and smooths points
      */
-    public void modifyPath(double smoothness_weight){
+    public void smoothPath(double smoothness_weight){
         InjectPoints(6); // 6 inches of spacing in between points
         SmoothPath(1-smoothness_weight, smoothness_weight, 0.001);
     }
@@ -164,9 +163,8 @@ public class Path{
      * Adds curvatures of each point to an array - used for calculations later 
      * The curvatures are calculated by taking 3 points at a time and fitting a circle through them.
      *  Then calculating the curvature of said circle 
-     * 
      */
-
+/*
     public void createCurvatures(){ 
         curvatures= new double[segments.size() - 1];
         for(int i = 1; i <segments.size(); i++){
@@ -190,19 +188,43 @@ public class Path{
             curvatures[i-1]  = 1/radius; // curvature = 1/r
         }
     }
+*/
 
-    public double getCurvature(){
-        return 0;
+    public double getCurvature(Point position, Point nextPoint, Point lastPoint){
+        double x1 = lastPoint.getX();
+        double x2 = position.getX();
+        double x3 = nextPoint.getX();
+        double y1 = lastPoint.getY();
+        double y2 = position.getY();
+        double y3 = nextPoint.getY();
+
+        if(x1 - x2 < 0.001) {
+            // ensure no divide by 0 error
+           x2 += 0.001; 
+       }
+       double k1 = 0.5 * (Math.pow(x1, 2) + Math.pow(y1, 2)- Math.pow(x2, 2) - Math.pow(y2, 2))/ (x1-x2);
+       double k2 = (y1 - y2 )/(x1- x2 );
+       double b = 0.5 * (Math.pow(x2,2) - 2 * x2 * k1 + Math.pow(y2, 2) - Math.pow(x3 , 2) + 2 * x3 * k1 - Math.pow(y3,2)) / (x3* k2  - y3 + y2 - x2*k2 );
+       double a = k1 - k2 * b; 
+       double radius = Math.sqrt(Math.pow((x1 - a), 2) + Math.pow ( (y1 - b), 2));
+       return 1/radius; // curvature = 1/radius
     }
 
-      /**
+    /**
      * Adds max velocities @ each point to an array - used for pure pursuit algo for smoother turning
      */
-    public void createVelocities(){
-        velocities = new double[segments.size()-1];
-        for(int x = 0; x < segments.size(); x++){
+    public void getVelocity(Point position, Point target, Point lastPoint, double velocity){
+      
+    }
 
+    public double percentDone(double index, Point pos) {
+        double percent = 0;
+        double totalFinished;
+        double totalRemaining;
+        if(int x = 0; x < index; x++){
+            
         }
+        return percent;
     }
 
     /**
@@ -220,7 +242,4 @@ public class Path{
         }
         return newPoints;
     }
-
-    
-    
 }

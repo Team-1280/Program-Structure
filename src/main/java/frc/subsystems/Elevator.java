@@ -8,8 +8,8 @@ import frc.robot.Constants;
 
 public class Elevator extends Threaded{
 
-    LazyTalonSRX talon1 = new LazyTalonSRX(deviceNumber);
-    LazyTalonSRX talon2 = new LazyTalonSRX(deviceNumber);
+    LazyTalonSRX talon1 = new LazyTalonSRX(1);
+    LazyTalonSRX talon2 = new LazyTalonSRX(2);
 
     private static final Elevator instance = new Elevator();
 
@@ -22,8 +22,9 @@ public class Elevator extends Threaded{
         talon2.set(ControlMode.PercentOutput, power);
     }
 
+    @Override
     public void update(){
-
+        // 
     }
 
 }

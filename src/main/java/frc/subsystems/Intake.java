@@ -8,8 +8,6 @@ import frc.robot.Constants;
 
 public class Intake extends Threaded{
 
-    Spark spark = new Spark(iD);
-
     private static final Intake instance = new Intake();
 
     public static Intake getInstance(){
@@ -17,7 +15,7 @@ public class Intake extends Threaded{
     }
 
     public void setPower(double power){
-       spark.set(power);
+      
     }
 
     public void update(){

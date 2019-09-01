@@ -60,6 +60,10 @@ public class Drive extends Threaded{
         return instance;
     }
 
+    public void calibrateGyro(){
+        
+    }
+
     /*
     Drive Train controllers 
     */
@@ -75,7 +79,7 @@ public class Drive extends Threaded{
     public double getAngle(){
         return 0; // returns gyro value
     }
-
+    
     @Override 
     public void update(){
 

@@ -23,8 +23,12 @@ public class PositionTracker extends Threaded{
     }
 
     public PositionTracker(){
-      position = new Point (instance.getOdometery().getX(), instance.getOdometery().getY());
+      position = new Point(0,0);
       lastGyro = drive.getAngle();
+    }
+
+    public void setStart(Point start){
+        position = new Point(start);
     }
     
     public Point getOdometery(){

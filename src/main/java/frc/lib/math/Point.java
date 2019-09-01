@@ -4,6 +4,12 @@ public class Point{
 
     double x, y;
     double theta;
+
+    public Point(Point point){
+        this.x = point.x;
+        this.y = point.y;
+        this.theta = point.theta;
+    }
   
     public Point(double x, double y){
       this.x = x;
